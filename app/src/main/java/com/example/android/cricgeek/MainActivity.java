@@ -61,6 +61,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         userAnswers[questionId] = answerIndex;
     }
 
+    /**
+     * Function to set views with appropriate questions and options.
+     * @param question Question object that contains the
+     *                 actual question statement and options.
+     */
     private void setQuestionAndOptions(Question question) {
         questionTextView = findViewById(R.id.qestiontextView);
         questionTextView.setText(question.question);
@@ -79,6 +84,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         storeUserAnswer(questionIndexer, selectedRadioButtonId);
     }
 
+    /**
+     * Function to obtain the option selected by user for a particular
+     * question.
+     * @return correct index ranging from 0 to 3
+     *         -1 if no option is selected
+     */
     private int getUserSelectedOption() {
         int selectedAnswer = -1;
 
@@ -103,6 +114,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return selectedAnswer;
     }
 
+    /**
+     * Function to calculate the final score of user.
+     * @param userAnswers Integer Array containing the answers of user.
+     * @param questionList List of all the questions which hold the correct indices.
+     * @return Integer score.
+     */
     private int calculateScore(int[] userAnswers, ArrayList<Question> questionList) {
         Log.i("calculateScore", "Size of List" + questionList.size());
         for (int i = 0; i < questionList.size(); i++) {
@@ -115,6 +132,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return testScore;
     }
 
+    /**
+     * Since we have implemented OnClickListener this @Override method
+     * is responsible for handling the onClick actions of all the buttons used
+     * in the app.
+     * @param v View
+     */
     @Override
     public void onClick(View v) {
         int clickedId = v.getId();
@@ -128,6 +151,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    /**
+     * Actions to be performed when user clicks on Finish Button.
+     */
     private void finishButtonTap() {
         int selectedOption = getUserSelectedOption();
         if (selectedOption != -1) {
@@ -160,6 +186,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttonFinish.setClickable(false);
     }
 
+    /**
+     * Actions to be performed when user clicks on Next Button.
+     */
     private void nextButtonTap() {
         RadioGroup radioGroup = findViewById(R.id.radioGroup);
         int selectedAnswer = getUserSelectedOption();
@@ -178,6 +207,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setQuestionAndOptions(question);
     }
 
+    /**
+     * Actions to be performed when user clicks on Start Test Button.
+     */
     private void startButtonTap() {
         startButton = findViewById(R.id.button1);
         layout = findViewById(R.id.options_frameLayout);
@@ -191,6 +223,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setQuestionAndOptions(questionOne);
     }
 
+    /**
+     * Function responsible for allowing user to email the test score.
+     */
     private void emailScore() {
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse(getString(R.string.mail_intent)));
