@@ -3,13 +3,16 @@ package com.example.android.cricgeek;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -25,14 +28,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private final QuestionsProvider qp = new QuestionsProvider();
     public static int questionIndexer;
-    private final int[] userAnswers = new int[10];
+    private final int[] userAnswers = new int[12];
     ArrayList<Question> listOfQuestions;
     Button startButton;
     Button buttonNext;
     FloatingActionButton buttonFinish;
     FrameLayout layout;
     TextView questionTextView;
-    int testScore = 0;
+    int testScore;
+    int scoreForLastTwoQuestions;
+    CheckBox checkBox1;
+    CheckBox checkBox2;
+    CheckBox checkBox3;
+    CheckBox checkBox4;
+    LinearLayout layout_edittext;
+    LinearLayout layout_checks;
+    EditText editText;
 
 
     @Override
@@ -54,7 +65,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Function to store the answer submitted by the user.
-     * @param questionId : Integer sequence of question in the ArrayList
+     *
+     * @param questionId  : Integer sequence of question in the ArrayList
      * @param answerIndex : User provided option
      */
     private void storeUserAnswer(int questionId, int answerIndex) {
@@ -63,11 +75,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Function to set views with appropriate questions and options.
+     *
      * @param question Question object that contains the
      *                 actual question statement and options.
      */
     private void setQuestionAndOptions(Question question) {
-        questionTextView = findViewById(R.id.qestiontextView);
+        questionTextView = findViewById(R.id.questionTextView);
         questionTextView.setText(question.question);
 
         RadioButton optionOne = findViewById(R.id.ans1);
@@ -87,8 +100,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * Function to obtain the option selected by user for a particular
      * question.
+     *
      * @return correct index ranging from 0 to 3
-     *         -1 if no option is selected
+     * -1 if no option is selected
      */
     private int getUserSelectedOption() {
         int selectedAnswer = -1;
@@ -116,15 +130,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Function to calculate the final score of user.
-     * @param userAnswers Integer Array containing the answers of user.
+     *
+     * @param userAnswers  Integer Array containing the answers of user.
      * @param questionList List of all the questions which hold the correct indices.
      * @return Integer score.
      */
     private int calculateScore(int[] userAnswers, ArrayList<Question> questionList) {
-        Log.i("calculateScore", "Size of List" + questionList.size());
         for (int i = 0; i < questionList.size(); i++) {
-            Log.i("calculateScore", "userAnswer[i]" + userAnswers[i]);
-            Log.i("calculateScore", "correctIndex" + questionList.get(i).correctIndex);
             if (userAnswers[i] == questionList.get(i).correctIndex) {
                 testScore++;
             }
@@ -136,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * Since we have implemented OnClickListener this @Override method
      * is responsible for handling the onClick actions of all the buttons used
      * in the app.
+     *
      * @param v View
      */
     @Override
@@ -159,10 +172,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (selectedOption != -1) {
             userAnswers[questionIndexer] = selectedOption;
         }
+        if (questionIndexer > 9) {
+            userAnswers[10] = userAnswers[11] = 0;
+            if (checkBox1.isChecked() && checkBox2.isChecked()) {
 
+                scoreForLastTwoQuestions++;
+            }
+
+            editText = findViewById(R.id.edit_text);
+            if (editText.getText().toString().equalsIgnoreCase("bails")) {
+                scoreForLastTwoQuestions++;
+            }
+        }
+        testScore = (calculateScore(userAnswers, listOfQuestions) + scoreForLastTwoQuestions);
         AlertDialog.Builder scoreAlertBuilder = new AlertDialog.Builder(this);
         scoreAlertBuilder.setTitle(R.string.test_score);
-        scoreAlertBuilder.setMessage(getString(R.string.your_score) + calculateScore(userAnswers, listOfQuestions) + getString(R.string.alert_ask_email));
+        scoreAlertBuilder.setMessage(getString(R.string.your_score) + testScore + getString(R.string.alert_ask_email));
         scoreAlertBuilder.setCancelable(true);
 
         scoreAlertBuilder.setPositiveButton(
@@ -174,11 +199,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 (dialog, id) -> dialog.dismiss());
 
         AlertDialog scoreAlert = scoreAlertBuilder.create();
+        Toast.makeText(this, getString(R.string.your_score) + testScore, Toast.LENGTH_LONG).show();
         scoreAlert.show();
 
-
-        TextView questionTextView = findViewById(R.id.qestiontextView);
-        questionTextView.setText(R.string.dialog_negative_button_string);
         layout = findViewById(R.id.options_frameLayout);
         layout.setVisibility(View.INVISIBLE);
         buttonNext = findViewById(R.id.buttonNext);
@@ -194,17 +217,66 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int selectedAnswer = getUserSelectedOption();
 
         if (questionIndexer == 9) {
-            Toast.makeText(getApplicationContext(), R.string.end_test_toast, Toast.LENGTH_LONG).show();
-            buttonNext.setClickable(false);
-            return;
+            storeUserAnswer(questionIndexer, selectedAnswer);
+            showCheckboxQuestion();
+            questionIndexer++;
+        } else if (questionIndexer == 10) {
+            showFreeTextQuestion();
+            buttonNext.setVisibility(View.GONE);
+        } else {
+            storeUserAnswer(questionIndexer, selectedAnswer);
+            questionIndexer++;
+            radioGroup.clearCheck();
+            Question question = qp.getQuestionByIndex(questionIndexer);
+            setQuestionAndOptions(question);
         }
+    }
 
-        storeUserAnswer(questionIndexer, selectedAnswer);
-        questionIndexer++;
+    /**
+     * This function is specifically written to display the question that has multiple
+     * correct answers.
+     */
+    private void showCheckboxQuestion() {
+        questionTextView.setText(R.string.question11);
+        FrameLayout layout = findViewById(R.id.options_frameLayout);
+        layout.setVisibility(View.INVISIBLE);
 
-        radioGroup.clearCheck();
-        Question question = qp.getQuestionByIndex(questionIndexer);
-        setQuestionAndOptions(question);
+        checkBox1 = findViewById(R.id.checkbox1);
+        checkBox1.setText(R.string.q11_optionOne);
+        checkBox1.setVisibility(View.VISIBLE);
+
+        checkBox2 = findViewById(R.id.checkbox2);
+        checkBox2.setText(R.string.q11_optionTwo);
+        checkBox2.setVisibility(View.VISIBLE);
+
+        checkBox3 = findViewById(R.id.checkbox3);
+        checkBox3.setText(R.string.q11_optionThree);
+        checkBox3.setVisibility(View.VISIBLE);
+
+        checkBox4 = findViewById(R.id.checkbox4);
+        checkBox4.setText(R.string.q11_optionFour);
+        checkBox4.setVisibility(View.VISIBLE);
+
+        LinearLayout layout_checks = findViewById(R.id.checks_frame);
+        layout_checks.setVisibility(View.VISIBLE);
+        buttonNext.setClickable(true);
+    }
+
+    /**
+     * This function is specifically written to display the question that has free
+     * text form of answer.
+     */
+    private void showFreeTextQuestion() {
+        questionTextView.setText(R.string.question12);
+        FrameLayout layout = findViewById(R.id.options_frameLayout);
+        layout.setVisibility(View.INVISIBLE);
+
+        layout_checks = findViewById(R.id.checks_frame);
+        layout_checks.setVisibility(View.INVISIBLE);
+
+        layout_edittext = findViewById(R.id.edit_frame);
+        layout_edittext.setVisibility(View.VISIBLE);
+
     }
 
     /**
@@ -230,7 +302,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse(getString(R.string.mail_intent)));
         intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.email_subject));
-        intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.email_body) + testScore +getString(R.string.email_signature));
-        if (null != intent.resolveActivity(getPackageManager())) startActivity(intent);
+        intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.email_body) + testScore + getString(R.string.email_signature));
+        try{
+            startActivity(intent);
+        }
+        catch(ActivityNotFoundException exception){
+            Toast.makeText(this,"No Email App found to send your score",Toast.LENGTH_LONG).show();
+        }
     }
 }

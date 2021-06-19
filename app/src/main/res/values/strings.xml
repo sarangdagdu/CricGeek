@@ -16,4 +16,11 @@
     <string name="email_body">Thank You for choosing CrickGeek.\nScore :\ </string>
     <string name="email_signature">\n\n\n --Team CrickGeek</string>
     <string name="dialog_negative_button_string">Thank You for Choosing CricGeek.</string>
+    <string name="question11">Select Countries who have won an ICC ODI World Cup (50 overs format.)</string>
+    <string name="q11_optionOne">India</string>
+    <string name="q11_optionTwo">Pakistan</string>
+    <string name="q11_optionThree">South Africa</string>
+    <string name="q11_optionFour">New Zealand</string>
+    <string name="question12">Name the two small items which sit on top of the stumps.</string>
+    <string name="enter_your_answer_here">Enter your Answer Here</string>
 </resources>

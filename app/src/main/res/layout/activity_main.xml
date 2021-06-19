@@ -45,7 +45,7 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        android:id="@+id/qestiontextView"
+        android:id="@+id/questionTextView"
         style="@style/customTextStyle"
         android:layout_width="match_parent"
         android:layout_height="46dp"
@@ -60,6 +60,93 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/view" />
 
+
+    <LinearLayout
+        android:id="@+id/checks_frame"
+        android:layout_width="389dp"
+        android:layout_height="121dp"
+        android:orientation="vertical"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/questionTextView"
+        app:layout_constraintVertical_bias="0.120000005">
+
+        <CheckBox
+            android:id="@+id/checkbox1"
+            style="@style/customTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_weight="1"
+            android:text="@string/app_name"
+            android:visibility="invisible" />
+
+        <CheckBox
+            android:id="@+id/checkbox2"
+            style="@style/customTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_weight="1"
+            android:text="@string/app_name"
+            android:visibility="invisible" />
+
+        <CheckBox
+            android:id="@+id/checkbox3"
+            style="@style/customTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_weight="1"
+            android:text="@string/app_name"
+            android:visibility="invisible" />
+
+        <CheckBox
+            android:id="@+id/checkbox4"
+            style="@style/customTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_weight="1"
+            android:text="@string/app_name"
+            android:visibility="invisible" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/edit_frame"
+        android:layout_width="389dp"
+        android:layout_height="121dp"
+        android:orientation="vertical"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/questionTextView"
+        app:layout_constraintVertical_bias="0.120000005">
+
+        <EditText
+            android:id="@+id/edit_text"
+            style="@style/customTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginRight="32dp"
+            android:autofillHints="answer"
+            android:hint="@string/enter_your_answer_here"
+            android:inputType="text"
+            android:textColorHint="@color/white" />
+    </LinearLayout>
+
     <FrameLayout
         android:id="@+id/options_frameLayout"
         android:layout_width="389dp"
@@ -69,7 +156,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/qestiontextView"
+        app:layout_constraintTop_toBottomOf="@+id/questionTextView"
         app:layout_constraintVertical_bias="0.120000005">
 
         <RadioGroup
@@ -147,7 +234,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/start_test"
-        app:layout_constraintBottom_toTopOf="@+id/qestiontextView"
+        app:layout_constraintBottom_toTopOf="@+id/questionTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
